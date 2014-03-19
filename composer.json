@@ -1,0 +1,15 @@
+{
+    "name": "consumerr/php",
+    "type": "library",
+    "description": "",
+    "keywords": ["consumerr", "php"],
+    "homepage": "http://consumerr.io",
+    "require": {
+        "php": ">= 5.2.0"
+    },
+    "autoload": {
+        "files": [
+            "src/loader.php"
+        ]
+    }
+}
