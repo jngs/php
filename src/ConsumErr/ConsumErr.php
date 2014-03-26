@@ -219,9 +219,7 @@ class ConsumErr
      */
     public static function errorHandler($num, $str, $file, $line, $context = NULL)
 	{
-		if (in_array($num, array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE))) {
-            self::addErrorMessage($str, $num, $file, $line);
-		}
+        self::addErrorMessage($str, $num, $file, $line);
 	}
 
 }
