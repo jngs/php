@@ -3,7 +3,6 @@
 namespace ConsumErr\Sender;
 
 
-
 class PhpSender implements ISender
 {
 
@@ -21,7 +20,6 @@ class PhpSender implements ISender
 	 * @var string
 	 */
 	private $url;
-
 
 
 	function __construct($id, $secret, $url)

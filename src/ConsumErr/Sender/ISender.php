@@ -3,7 +3,6 @@
 namespace ConsumErr\Sender;
 
 
-
 interface ISender
 {
 

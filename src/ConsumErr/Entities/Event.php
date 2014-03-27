@@ -3,7 +3,6 @@
 namespace ConsumErr\Entities;
 
 
-
 class Event
 {
 
@@ -33,7 +32,6 @@ class Event
 	private $value = '';
 
 
-
 	function __construct($category, $action, $label = '', $value = '')
 	{
 		$this->datetime = time();
@@ -44,93 +42,93 @@ class Event
 	}
 
 
-    /**
-     * @return array
-     */
-    public function __toArray()
-    {
-        return get_object_vars($this);
-    }
+	/**
+	 * @return array
+	 */
+	public function __toArray()
+	{
+		return get_object_vars($this);
+	}
 
 
-    /**
-     * @param string $action
-     */
-    public function setAction($action)
-    {
-        $this->action = $action;
-    }
+	/**
+	 * @param string $action
+	 */
+	public function setAction($action)
+	{
+		$this->action = $action;
+	}
 
 
-    /**
-     * @return string
-     */
-    public function getAction()
-    {
-        return $this->action;
-    }
+	/**
+	 * @return string
+	 */
+	public function getAction()
+	{
+		return $this->action;
+	}
 
 
-    /**
-     * @param string $category
-     */
-    public function setCategory($category)
-    {
-        $this->category = $category;
-    }
+	/**
+	 * @param string $category
+	 */
+	public function setCategory($category)
+	{
+		$this->category = $category;
+	}
 
 
-    /**
-     * @return string
-     */
-    public function getCategory()
-    {
-        return $this->category;
-    }
+	/**
+	 * @return string
+	 */
+	public function getCategory()
+	{
+		return $this->category;
+	}
 
 
-    /**
-     * @return integer
-     */
-    public function getDatetime()
-    {
-        return $this->datetime;
-    }
+	/**
+	 * @return integer
+	 */
+	public function getDatetime()
+	{
+		return $this->datetime;
+	}
 
 
-    /**
-     * @param string $label
-     */
-    public function setLabel($label)
-    {
-        $this->label = $label;
-    }
+	/**
+	 * @param string $label
+	 */
+	public function setLabel($label)
+	{
+		$this->label = $label;
+	}
 
 
-    /**
-     * @return string
-     */
-    public function getLabel()
-    {
-        return $this->label;
-    }
+	/**
+	 * @return string
+	 */
+	public function getLabel()
+	{
+		return $this->label;
+	}
 
 
-    /**
-     * @param string $value
-     */
-    public function setValue($value)
-    {
-        $this->value = $value;
-    }
+	/**
+	 * @param string $value
+	 */
+	public function setValue($value)
+	{
+		$this->value = $value;
+	}
 
 
-    /**
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
+	/**
+	 * @return string
+	 */
+	public function getValue()
+	{
+		return $this->value;
+	}
 
 }

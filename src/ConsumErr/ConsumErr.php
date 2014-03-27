@@ -4,8 +4,7 @@ namespace ConsumErr;
 
 use ConsumErr\Entities;
 
-/**/class_alias('ConsumErr\ConsumErr', 'ConsumErr');/**/
-
+/**/ class_alias('ConsumErr\ConsumErr', 'ConsumErr'); /**/
 
 
 class ConsumErr
@@ -15,7 +14,14 @@ class ConsumErr
 		'id' => '',
 		'secret' => '',
 		'url' => 'http://service.consumerr.io/',
-        'sender' => /**/'ConsumErr\Sender\PhpSender'/**//*5.2*'ConsumErr_PhpSender'*/,
+		'sender' => /**/ 'ConsumErr\Sender\PhpSender' /**/ /*5.2*'ConsumErr_PhpSender'*/,
+		'exclude' => array(
+			'ip' => array(),
+			'error' => array(),
+		),
+		'cache' => array(
+			'enable' => FALSE,
+		),
 	);
 
 	/**
@@ -23,21 +29,20 @@ class ConsumErr
 	 */
 	private static $access;
 
-    /**
-     * @var \ConsumErr\Sender\ISender
-     */
-    private static $sender;
+	/**
+	 * @var \ConsumErr\Sender\ISender
+	 */
+	private static $sender;
 
 
-
-    /**
-     * @param array $options
-     */
-    public static function init($options = array())
+	/**
+	 * @param array $options
+	 */
+	public static function init($options = array())
 	{
-        self::$options = $options + self::$options;
+		self::$options = $options + self::$options;
 
-        self::getTime();
+		self::getTime();
 
 		if (isset($_SERVER['REQUEST_URI'])) {
 			self::getAccess()->setUrl((isset($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'off') ? 'https://' : 'http://')
@@ -57,10 +62,10 @@ class ConsumErr
 	}
 
 
-    /**
-     * @return Entities\Access
-     */
-    protected static function getAccess()
+	/**
+	 * @return Entities\Access
+	 */
+	protected static function getAccess()
 	{
 		if (!self::$access) {
 			self::$access = new Entities\Access;
@@ -69,41 +74,41 @@ class ConsumErr
 	}
 
 
-    /**
-     * @return Sender\ISender
-     */
-    protected static function getSender()
-    {
-        if (!self::$sender) {
-            $senderClass = self::$options['sender'];
-            self::$sender = new $senderClass(self::$options['id'], self::$options['secret'], self::$options['url']);
-        }
-        return self::$sender;
-    }
+	/**
+	 * @return Sender\ISender
+	 */
+	protected static function getSender()
+	{
+		if (!self::$sender) {
+			$senderClass = self::$options['sender'];
+			self::$sender = new $senderClass(self::$options['id'], self::$options['secret'], self::$options['url']);
+		}
+		return self::$sender;
+	}
 
 
-    /**
-     * @param Sender\ISender $sender
-     */
-    public static function setSender(Sender\ISender $sender)
-    {
-        self::$sender = $sender;
-    }
+	/**
+	 * @param Sender\ISender $sender
+	 */
+	public static function setSender(Sender\ISender $sender)
+	{
+		self::$sender = $sender;
+	}
 
 
-    /**
-     * @return array
-     */
-    public static function getOptions()
-    {
-        return self::$options;
-    }
+	/**
+	 * @return array
+	 */
+	public static function getOptions()
+	{
+		return self::$options;
+	}
 
 
-    /**
-     * @return float
-     */
-    public static function getTime()
+	/**
+	 * @return float
+	 */
+	public static function getTime()
 	{
 		if (!($time = self::getAccess()->getTime())) {
 			self::getAccess()->setTime($time = (isset($_SERVER['REQUEST_TIME_FLOAT']) ? $_SERVER['REQUEST_TIME_FLOAT'] : microtime(TRUE)));
@@ -112,114 +117,118 @@ class ConsumErr
 	}
 
 
-    /**
-     * @param string $name
-     */
-    public static function setName($name)
-    {
-        self::getAccess()->setName($name);
-    }
-
-
-    /**
-     * @param string $url
-     */
-    public static function setUrl($url)
-    {
-        self::getAccess()->setUrl($url);
-    }
-
-
-    /**
-     * @param bool $backgroundJob
-     */
-    public static function setBackgroundJob($backgroundJob = TRUE)
-    {
-        self::getAccess()->getBackgroundJob($backgroundJob);
-    }
-
-
-    /**
-     * @param \Exception $exception
-     */
-    public static function addError(\Exception $exception)
+	/**
+	 * @param string $name
+	 */
+	public static function setName($name)
 	{
-		self::getAccess()->addError(new Entities\Error($exception));
+		self::getAccess()->setName($name);
 	}
 
 
-    /**
-     * @param string $message
-     * @param integer $num
-     * @param string $file
-     * @param integer $line
-     */
-    public static function addErrorMessage($message, $num = E_USER_ERROR, $file = '', $line = 0)
-    {
-        if (is_array($message)) {
-            $message = implode(' ', $message);
-        }
-        self::addError(new \ErrorException($message, 0, $num, $file, $line));
-    }
+	/**
+	 * @param string $url
+	 */
+	public static function setUrl($url)
+	{
+		self::getAccess()->setUrl($url);
+	}
 
 
-    /**
-     * @param string $category
-     * @param string $action
-     * @param string $label
-     * @param string $value
-     */
-    public static function addEvent($category, $action, $label = '', $value = '')
+	/**
+	 * @param bool $backgroundJob
+	 */
+	public static function setBackgroundJob($backgroundJob = TRUE)
+	{
+		self::getAccess()->getBackgroundJob($backgroundJob);
+	}
+
+
+	/**
+	 * @param \Exception $exception
+	 * @return \ConsumErr\Entities\Error
+	 */
+	public static function addError(\Exception $exception)
+	{
+		$exception = new Entities\Error($exception);
+		self::getAccess()->addError($exception);
+
+		return $exception;
+	}
+
+
+	/**
+	 * @param string $message
+	 * @param integer $num
+	 * @param string $file
+	 * @param integer $line
+	 * @return \ConsumErr\Entities\Error
+	 */
+	public static function addErrorMessage($message, $num = E_USER_ERROR, $file = '', $line = 0)
+	{
+		if (is_array($message)) {
+			$message = implode(' ', $message);
+		}
+		return self::addError(new \ErrorException($message, 0, $num, $file, $line));
+	}
+
+
+	/**
+	 * @param string $category
+	 * @param string $action
+	 * @param string $label
+	 * @param string $value
+	 */
+	public static function addEvent($category, $action, $label = '', $value = '')
 	{
 		self::getAccess()->addEvent(new Entities\Event($category, $action, $label, $value));
 	}
 
 
-    /**
-     * @param string $name
-     */
-    public static function addPart($name = '')
+	/**
+	 * @param string $name
+	 */
+	public static function addPart($name = '')
 	{
 		self::getAccess()->addPart(new Entities\Part(-1 * self::getTime() + microtime(TRUE), $name));
 	}
 
 
-    /**
-     *
-     */
-    public static function shutdownHandler()
+	/**
+	 *
+	 */
+	public static function shutdownHandler()
 	{
-		if(!is_null($e = error_get_last()))
-		{
+		if (!is_null($e = error_get_last())) {
 			self::errorHandler($e['type'], $e['message'], $e['file'], $e['line']);
 		}
 
-        self::getAccess()->setMemory(function_exists('memory_get_peak_usage') ? memory_get_peak_usage() : NULL);
-        self::getAccess()->setTime(-1 * self::getTime() + microtime(TRUE));
+		self::getAccess()->setMemory(function_exists('memory_get_peak_usage') ? memory_get_peak_usage() : NULL);
+		self::getAccess()->setTime(-1 * self::getTime() + microtime(TRUE));
 
-        self::getSender()->send(array((string)self::getAccess()));
+		self::getSender()->send(array((string)self::getAccess()));
 	}
 
 
-    /**
-     * @param \Exception $e
-     */
-    public static function exceptionHandler(\Exception $e)
+	/**
+	 * @param \Exception $e
+	 */
+	public static function exceptionHandler(\Exception $e)
 	{
-        self::addError($e);
+		self::addError($e);
 	}
 
 
-    /**
-     * @param integer $num
-     * @param string $str
-     * @param string $file
-     * @param integer $line
-     * @param string|null $context
-     */
-    public static function errorHandler($num, $str, $file, $line, $context = NULL)
+	/**
+	 * @param integer $num
+	 * @param string $str
+	 * @param string $file
+	 * @param integer $line
+	 * @param string|null $context
+	 */
+	public static function errorHandler($num, $str, $file, $line, $context = NULL)
 	{
-        self::addErrorMessage($str, $num, $file, $line);
+		self::addErrorMessage($str, $num, $file, $line);
 	}
 
 }

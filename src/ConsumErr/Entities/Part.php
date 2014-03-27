@@ -3,7 +3,6 @@
 namespace ConsumErr\Entities;
 
 
-
 class Part
 {
 
@@ -18,7 +17,6 @@ class Part
 	private $name;
 
 
-
 	function __construct($time, $name = '')
 	{
 		$this->name = $name;
@@ -26,27 +24,27 @@ class Part
 	}
 
 
-    /**
-     * @return array
-     */
-    public function __toArray()
-    {
-        return get_object_vars($this);
-    }
+	/**
+	 * @return array
+	 */
+	public function __toArray()
+	{
+		return get_object_vars($this);
+	}
 
 
-    /**
-     * @param array $values
-     */
-    public function setValues($values)
-    {
-        foreach ($values as $var => $value) {
-            $this->$var = $value;
-        }
-    }
+	/**
+	 * @param array $values
+	 */
+	public function setValues($values)
+	{
+		foreach ($values as $var => $value) {
+			$this->$var = $value;
+		}
+	}
 
 
-    /**
+	/**
 	 * @param string $name
 	 * @return Part
 	 */

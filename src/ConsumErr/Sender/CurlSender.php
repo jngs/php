@@ -3,7 +3,6 @@
 namespace ConsumErr\Sender;
 
 
-
 class CurlSender implements ISender
 {
 
@@ -21,7 +20,6 @@ class CurlSender implements ISender
 	 * @var string
 	 */
 	private $url;
-
 
 
 	function __construct($id, $secret, $url)
