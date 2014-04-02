@@ -150,6 +150,12 @@ class ConsumErr
 	 */
 	public static function addError(\Exception $exception)
 	{
+		if ($exception instanceof \ErrorException &&
+			in_array($exception->getSeverity(), (array) self::$options['exclude']['error']))
+		{
+			return NULL;
+		}
+
 		$exception = new Entities\Error($exception);
 		self::getAccess()->addError($exception);
 
@@ -206,7 +212,13 @@ class ConsumErr
 		self::getAccess()->setMemory(function_exists('memory_get_peak_usage') ? memory_get_peak_usage() : NULL);
 		self::getAccess()->setTime(-1 * self::getTime() + microtime(TRUE));
 
-		self::getSender()->send(array((string)self::getAccess()));
+		if (!in_array(
+				isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : php_uname('n'),
+				(array) self::$options['exclude']['ip'],
+				TRUE
+		)) {
+			self::getSender()->send(array((string)self::getAccess()));
+		}
 	}
 
 
