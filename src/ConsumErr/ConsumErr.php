@@ -176,12 +176,14 @@ class ConsumErr
 	 * @param integer $line
 	 * @return \ConsumErr\Entities\Error
 	 */
-	public static function addErrorMessage($message, $num = E_USER_ERROR, $file = '', $line = 0)
+	public static function addErrorMessage($message, $num = E_USER_ERROR, $file = '', $line = 0, $context = [])
 	{
 		if (is_array($message)) {
 			$message = implode(' ', $message);
 		}
-		return self::addError(new \ErrorException($message, 0, $num, $file, $line));
+        $exception = new \ErrorException($message, 0, $num, $file, $line);
+        $exception->context = $context;
+		return self::addError($exception);
 	}
 
 
@@ -211,8 +213,9 @@ class ConsumErr
 	 */
 	public static function shutdownHandler()
 	{
-		if (!is_null($e = error_get_last())) {
-			self::errorHandler($e['type'], $e['message'], $e['file'], $e['line']);
+        $error = error_get_last();
+        if (in_array($error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE))) {
+			self::errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
 		}
 
 		self::getAccess()->setMemory(function_exists('memory_get_peak_usage') ? memory_get_peak_usage() : NULL);
@@ -246,7 +249,7 @@ class ConsumErr
 	 */
 	public static function errorHandler($num, $str, $file, $line, $context = NULL)
 	{
-		self::addErrorMessage($str, $num, $file, $line);
+		self::addErrorMessage($str, $num, $file, $line, $context);
 	}
 
     /**
