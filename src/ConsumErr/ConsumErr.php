@@ -14,7 +14,7 @@ class ConsumErr
 		'id' => '',
 		'secret' => '',
 		'url' => 'http://service.consumerr.io/',
-		'sender' => /**/ 'ConsumErr\Sender\PhpSender' /**/ /*5.2*'ConsumErr_PhpSender'*/,
+		'sender' => NULL,
 		'exclude' => array(
 			'ip' => array(),
 			'error' => array(),
@@ -56,10 +56,15 @@ class ConsumErr
 
 		error_reporting(E_ALL | E_STRICT);
 
-		register_shutdown_function(array(__CLASS__, 'shutdownHandler'));
+
 		set_exception_handler(array(__CLASS__, 'exceptionHandler'));
 		set_error_handler(array(__CLASS__, 'errorHandler'));
 	}
+
+    public static function registerShutdownHandler()
+    {
+        register_shutdown_function(array(__CLASS__, 'shutdownHandler'));
+    }
 
 
 	/**
@@ -80,8 +85,9 @@ class ConsumErr
 	protected static function getSender()
 	{
 		if (!self::$sender) {
-			$senderClass = self::$options['sender'];
-			self::$sender = new $senderClass(self::$options['id'], self::$options['secret'], self::$options['url']);
+            $senderClass = self::getSenderClass();
+
+            self::$sender = new $senderClass(self::$options['id'], self::$options['secret'], self::$options['url']);
 		}
 		return self::$sender;
 	}
@@ -242,5 +248,23 @@ class ConsumErr
 	{
 		self::addErrorMessage($str, $num, $file, $line);
 	}
+
+    /**
+     * @return string
+     */
+    public static function getSenderClass()
+    {
+        if (!self::$options['sender']) {
+            if (function_exists('extension_loaded') && extension_loaded('curl')) {
+                $senderClass = /**/'ConsumErr\Sender\CurlSender' /**/ /*5.2*'ConsumErr_CurlSender'*/;
+            } else {
+                $senderClass = /**/'ConsumErr\Sender\PhpSender' /**/ /*5.2*'ConsumErr_PhpSender'*/;
+            }
+        } else {
+            $senderClass = self::$options['sender'];
+        }
+
+        return $senderClass;
+    }
 
 }
