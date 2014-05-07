@@ -44,7 +44,7 @@ class CurlSender implements ISender
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 		curl_setopt($ch, CURLOPT_POST, TRUE);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($ch, CURLOPT_TIMEOUT_MS, 500);
+		curl_setopt($ch, CURLOPT_TIMEOUT_MS, 2500);
 
 		curl_exec($ch);
 	}
