@@ -2,10 +2,11 @@
     "name": "consumerr/php",
     "type": "library",
     "description": "",
-    "keywords": ["consumerr", "php"],
+    "license": ["MIT"],
+    "keywords": ["consumerr", "php", "debug", "logging"],
     "homepage": "http://consumerr.io",
     "require": {
-        "php": ">= 5.2.0"
+        "php": ">= 5.3.0"
     },
     "autoload": {
         "classmap": [
