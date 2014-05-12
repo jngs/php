@@ -56,10 +56,10 @@ class ConsumErr
 
 		error_reporting(E_ALL | E_STRICT);
 
-
-		set_exception_handler(array(__CLASS__, 'exceptionHandler'));
-		set_error_handler(array(__CLASS__, 'errorHandler'));
-	}
+        set_exception_handler(array(__CLASS__, 'exceptionHandler'));
+        set_error_handler(array(__CLASS__, 'errorHandler'));
+        self::registerShutdownHandler();
+    }
 
     public static function registerShutdownHandler()
     {
