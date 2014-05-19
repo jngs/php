@@ -3,6 +3,8 @@
 namespace ConsumErr\Entities;
 
 
+use ConsumErr\ConsumErr;
+
 class Access
 {
 
@@ -39,7 +41,9 @@ class Access
 	/**
 	 * @var string
 	 */
-	private $version = '10000';
+	private $versions = array(
+        ConsumErr::EXTENSION_NAME => ConsumErr::VERSION_CODE
+    );
 
 	/**
 	 * @var integer
@@ -60,6 +64,15 @@ class Access
 	 * @var \ConsumErr\Entities\Part[]
 	 */
 	private $parts = array();
+
+    /** @var string */
+    private $serverName;
+
+    /** @var string */
+    private $remoteAddr;
+
+    /** @var string */
+    private $userAgent;
 
 
 	/**
@@ -191,15 +204,11 @@ class Access
 		return $this->memory;
 	}
 
-
-	/**
-	 * @return string
-	 */
-	public function getVersion()
-	{
-		return $this->version;
-	}
-
+    public function addExtensionVersion($name, $versionCode)
+    {
+        $this->versions[$name] = $versionCode;
+        return $this;
+    }
 
 	/**
 	 * @param \ConsumErr\Entities\Error $error
@@ -279,5 +288,55 @@ class Access
 	{
 		return $this->type;
 	}
+
+    /**
+     * @return string
+     */
+    public function getServerName()
+    {
+        return $this->serverName;
+    }
+
+    /**
+     * @param string $host
+     */
+    public function setServerName($host)
+    {
+        $this->serverName = $host;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRemoteAddr()
+    {
+        return $this->remoteAddr;
+    }
+
+    /**
+     * @param string $remoteAddr
+     */
+    public function setRemoteAddr($remoteAddr)
+    {
+        $this->remoteAddr = $remoteAddr;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserAgent()
+    {
+        return $this->userAgent;
+    }
+
+    /**
+     * @param string $userAgent
+     */
+    public function setUserAgent($userAgent)
+    {
+        $this->userAgent = $userAgent;
+    }
+
+
 
 }

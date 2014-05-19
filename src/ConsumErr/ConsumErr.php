@@ -10,6 +10,10 @@ use ConsumErr\Entities;
 class ConsumErr
 {
 
+    const EXTENSION_NAME = 'php';
+    const VERSION = '1.0.2';
+    const VERSION_CODE = 10002;
+
 	private static $options = array(
 		'id' => '',
 		'secret' => '',
@@ -36,34 +40,63 @@ class ConsumErr
 
 
 	/**
+     * @deprecated
 	 * @param array $options
 	 */
 	public static function init($options = array())
-	{
+    {
+        self::enable($options);
+    }
+
+    /**
+     * Enables Consumerr error handlers
+     * @param array $options
+     */
+    public static function enable($options = array())
+    {
 		self::$options = $options + self::$options;
 
-		self::getTime();
-
-		if (isset($_SERVER['REQUEST_URI'])) {
-			self::getAccess()->setUrl((isset($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'off') ? 'https://' : 'http://')
-				. (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : ''))
-				. $_SERVER['REQUEST_URI']);
-		} else {
-			self::getAccess()->setUrl(empty($_SERVER['argv']) ? 'CLI' : 'CLI: ' . implode(' ', $_SERVER['argv']));
-			self::getAccess()->setName('$ ' . basename($_SERVER['argv'][0]) . ' ' . implode(' ', array_slice($_SERVER['argv'], 1)));
-			self::getAccess()->setBackgroundJob(TRUE);
-		}
+        self::initialize();
 
 		error_reporting(E_ALL | E_STRICT);
 
         set_exception_handler(array(__CLASS__, 'exceptionHandler'));
         set_error_handler(array(__CLASS__, 'errorHandler'));
-        self::registerShutdownHandler();
+
+        register_shutdown_function(array(__CLASS__, 'errorShutdownHandler'));
+        self::registerSenderShutdownHandler();
     }
 
-    public static function registerShutdownHandler()
+    public static function initialize()
     {
-        register_shutdown_function(array(__CLASS__, 'shutdownHandler'));
+        self::getTime();
+
+		if (isset($_SERVER['REQUEST_URI'])) {
+			self::getAccess()->setUrl((isset($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'off') ? 'https://' : 'http://')
+				. (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : ''))
+				. $_SERVER['REQUEST_URI']);
+
+            if(isset($_SERVER['SERVER_NAME'])) {
+                self::getAccess()->setServerName($_SERVER['SERVER_NAME']);
+            }
+
+            if(isset($_SERVER['REMOTE_ADDR'])) {
+                self::getAccess()->setRemoteAddr($_SERVER['REMOTE_ADDR']);
+            }
+
+            if(isset($_SERVER['HTTP_USER_AGENT'])) {
+                self::getAccess()->setUserAgent($_SERVER['HTTP_USER_AGENT']);
+            }
+		} else {
+			self::getAccess()->setUrl(empty($_SERVER['argv']) ? 'CLI' : 'CLI: ' . implode(' ', $_SERVER['argv']));
+			self::getAccess()->setName('$ ' . basename($_SERVER['argv'][0]) . ' ' . implode(' ', array_slice($_SERVER['argv'], 1)));
+			self::getAccess()->setBackgroundJob(TRUE);
+		}
+    }
+
+    public static function registerSenderShutdownHandler()
+    {
+        register_shutdown_function(array(__CLASS__, 'senderShutdownHandler'));
     }
 
 
@@ -211,13 +244,8 @@ class ConsumErr
 	/**
 	 *
 	 */
-	public static function shutdownHandler()
+	public static function senderShutdownHandler()
 	{
-        $error = error_get_last();
-        if (in_array($error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE))) {
-			self::errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
-		}
-
 		self::getAccess()->setMemory(function_exists('memory_get_peak_usage') ? memory_get_peak_usage() : NULL);
 		self::getAccess()->setTime(-1 * self::getTime() + microtime(TRUE));
 
@@ -268,6 +296,19 @@ class ConsumErr
         }
 
         return $senderClass;
+    }
+
+    public static function addExtension($extensionName, $versionCode)
+    {
+        self::getAccess()->addExtensionVersion($extensionName, $versionCode);
+    }
+
+    public static function errorShutdownHandler()
+    {
+        $error = error_get_last();
+        if (in_array($error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE))) {
+            self::errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
+        }
     }
 
 }
