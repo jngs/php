@@ -1,7 +1,7 @@
 {
     "name": "consumerr/php",
     "type": "library",
-    "description": "",
+    "description": "Consumerr error and exception logger for PHP",
     "license": ["MIT"],
     "keywords": ["consumerr", "php", "debug", "logging"],
     "homepage": "http://consumerr.io",
