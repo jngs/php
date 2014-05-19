@@ -7,10 +7,10 @@ interface ISender
 {
 
 
-	function __construct($id, $secret, $url);
+    function __construct($id, $secret, $url);
 
 
-	public function send($data);
+    public function send($data);
 
 
 }
