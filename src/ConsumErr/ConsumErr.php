@@ -39,6 +39,9 @@ class ConsumErr
      */
     private static $sender;
 
+    /** @var bool */
+    private static $enabled = FALSE;
+
 
     /**
      * @deprecated
@@ -70,6 +73,7 @@ class ConsumErr
 
     public static function initialize()
     {
+        self::$enabled = TRUE;
         self::getTime();
 
         if (isset($_SERVER['REQUEST_URI'])) {
@@ -101,6 +105,16 @@ class ConsumErr
     public static function registerSenderShutdownHandler()
     {
         register_shutdown_function(array(__CLASS__, 'senderShutdownHandler'));
+    }
+
+    public static function ignoreAccess($ignore = TRUE)
+    {
+        self::$enabled = !$ignore;
+    }
+
+    public static function isEnabled()
+    {
+        return self::$enabled;
     }
 
 
@@ -256,6 +270,9 @@ class ConsumErr
      */
     public static function senderShutdownHandler()
     {
+        if(!self::$enabled) {
+            return;
+        }
         self::getAccess()->setMemory(function_exists('memory_get_peak_usage') ? memory_get_peak_usage() : NULL);
         self::getAccess()->setTime(-1 * self::getTime() + microtime(TRUE));
 
