@@ -212,12 +212,13 @@ class ConsumErr
 
     /**
      * @param string $message
-     * @param integer $num
+     * @param int $num
      * @param string $file
      * @param integer $line
+     * @param array $context
      * @return \ConsumErr\Entities\Error
      */
-    public static function addErrorMessage($message, $num = E_USER_ERROR, $file = '', $line = 0, $context = [])
+    public static function addErrorMessage($message, $num = E_USER_ERROR, $file = '', $line = 0, $context = array())
     {
         if (is_array($message)) {
             $message = implode(' ', $message);
