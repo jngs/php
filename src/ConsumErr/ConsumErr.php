@@ -38,8 +38,8 @@ class ConsumErr
     );
 
     private static $senders = array(
-        'php' => 'Consumerr\\Sender\\PhpSender',
-        'curl' => 'Consumerr\\Sender\\CurlSender',
+        'php' => /**/ 'ConsumErr\Sender\PhpSender' /**/ /*5.2*'ConsumErr_PhpSender'*/,
+        'curl' => /**/'ConsumErr\Sender\CurlSender' /**/ /*5.2*'ConsumErr_CurlSender'*/,
     );
 
 
@@ -343,12 +343,10 @@ class ConsumErr
     {
         if (!self::$options['sender']) {
             if (function_exists('extension_loaded') && extension_loaded('curl')) {
-                $senderClass = /**/
-                    'ConsumErr\Sender\CurlSender' /**/ /*5.2*'ConsumErr_CurlSender'*/
+                $senderClass = /**/'ConsumErr\Sender\CurlSender' /**/ /*5.2*'ConsumErr_CurlSender'*/
                 ;
             } else {
-                $senderClass = /**/
-                    'ConsumErr\Sender\PhpSender' /**/ /*5.2*'ConsumErr_PhpSender'*/
+                $senderClass = /**/ 'ConsumErr\Sender\PhpSender' /**/ /*5.2*'ConsumErr_PhpSender'*/
                 ;
             }
         } else {
