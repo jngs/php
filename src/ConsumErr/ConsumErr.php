@@ -7,6 +7,13 @@ use ConsumErr\Entities;
 /**/
 class_alias('ConsumErr\ConsumErr', 'ConsumErr'); /**/
 
+if (!defined("E_DEPRECATED")) {
+    define("E_DEPRECATED", 8192);
+}
+if (!defined("E_USER_DEPRECATED")) {
+    define("E_USER_DEPRECATED", 16384);
+}
+
 
 class ConsumErr
 {
@@ -20,6 +27,7 @@ class ConsumErr
         'secret' => '',
         'url' => 'http://service.consumerr.io/',
         'sender' => NULL,
+        'error_reporting' => NULL,
         'exclude' => array(
             'ip' => array(),
             'error' => array(),
@@ -28,6 +36,12 @@ class ConsumErr
             'enable' => FALSE,
         ),
     );
+
+    private static $senders = array(
+        'php' => 'Consumerr\\Sender\\PhpSender',
+        'curl' => 'Consumerr\\Sender\\CurlSender',
+    );
+
 
     /**
      * @var \ConsumErr\Entities\Access
@@ -62,7 +76,11 @@ class ConsumErr
 
         self::initialize();
 
-        error_reporting(E_ALL | E_STRICT);
+        if (empty($options['error_reporting'])) {
+            $options['error_reporting'] = E_ALL | E_STRICT ^ E_NOTICE;
+        }
+
+        error_reporting($options['error_reporting']);
 
         set_exception_handler(array(__CLASS__, 'exceptionHandler'));
         set_error_handler(array(__CLASS__, 'errorHandler'));
@@ -90,6 +108,11 @@ class ConsumErr
             if (isset($_SERVER['REMOTE_ADDR'])) {
                 self::getAccess()->setRemoteAddr($_SERVER['REMOTE_ADDR']);
             }
+
+            if (isset($_SERVER['SCRIPT_NAME'])) {
+                self::getAccess()->setName($_SERVER['SCRIPT_NAME']);
+            }
+
 
             if (isset($_SERVER['HTTP_USER_AGENT'])) {
                 self::getAccess()->setUserAgent($_SERVER['HTTP_USER_AGENT']);
@@ -275,7 +298,7 @@ class ConsumErr
      */
     public static function senderShutdownHandler()
     {
-        if(!self::$enabled) {
+        if (!self::$enabled) {
             return;
         }
         self::getAccess()->setMemory(function_exists('memory_get_peak_usage') ? memory_get_peak_usage() : NULL);
@@ -329,6 +352,9 @@ class ConsumErr
                 ;
             }
         } else {
+            if (isset(self::$senders[self::$options['sender']])) {
+                self::$options['sender'] = self::$senders[self::$options['sender']];
+            }
             $senderClass = self::$options['sender'];
         }
 
