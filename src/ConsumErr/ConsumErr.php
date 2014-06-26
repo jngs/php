@@ -19,8 +19,8 @@ class ConsumErr
 {
 
     const EXTENSION_NAME = 'php';
-    const VERSION = '1.0.2';
-    const VERSION_CODE = 10002;
+    const VERSION = '1.1.0';
+    const VERSION_CODE = 10100;
 
     private static $options = array(
         'id' => '',
