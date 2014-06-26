@@ -107,6 +107,11 @@ class ConsumErr
         register_shutdown_function(array(__CLASS__, 'senderShutdownHandler'));
     }
 
+    public static function setOptions($options)
+    {
+        self::$options = array_merge(self::$options, $options);
+    }
+
     public static function ignoreAccess($ignore = TRUE)
     {
         self::$enabled = !$ignore;
