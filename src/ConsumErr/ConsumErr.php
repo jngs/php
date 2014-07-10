@@ -94,7 +94,7 @@ class ConsumErr
         self::$enabled = TRUE;
         self::getTime();
 
-        if (isset($_SERVER['REQUEST_URI'])) {
+        if (!self::isConsole()) {
             self::getAccess()->setUrl(
                 (isset($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'off') ? 'https://' : 'http://')
                 . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : ''))
@@ -118,9 +118,7 @@ class ConsumErr
                 self::getAccess()->setUserAgent($_SERVER['HTTP_USER_AGENT']);
             }
         } else {
-            self::getAccess()->setUrl(empty($_SERVER['argv']) ? 'CLI' : 'CLI: ' . implode(' ', $_SERVER['argv']));
-            self::getAccess()
-                ->setName('$ ' . basename($_SERVER['argv'][0]) . ' ' . implode(' ', array_slice($_SERVER['argv'], 1)));
+            self::getAccess()->setName(self::getCliArguments());
             self::getAccess()->setBackgroundJob(TRUE);
         }
     }
@@ -370,6 +368,28 @@ class ConsumErr
         if (in_array($error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE))) {
             self::errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
         }
+    }
+
+    /**
+     * @return bool
+     *
+     */
+    public static function isConsole()
+    {
+        return (defined("PHP_SAPI") && PHP_SAPI === 'cli') || !isset($_SERVER['REQUEST_URI']);
+    }
+
+    /**
+     *
+     * @internal
+     * @return string
+     */
+    public static function getCliArguments()
+    {
+        if(empty($_SERVER['argv'])) {
+            return '';
+        }
+        return '$ '.implode(' ', $_SERVER['argv']);
     }
 
 }
