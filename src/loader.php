@@ -9,4 +9,5 @@ require_once __DIR__ . '/ConsumErr/Sender/ISender.php';
 require_once __DIR__ . '/ConsumErr/Sender/PhpSender.php';
 require_once __DIR__ . '/ConsumErr/Sender/CurlSender.php';
 
+require_once __DIR__ . '/ConsumErr/Configuration.php';
 require_once __DIR__ . '/ConsumErr/ConsumErr.php';

@@ -3,30 +3,19 @@
 namespace ConsumErr\Sender;
 
 
+use ConsumErr\Configuration;
+
 class PhpSender implements ISender
 {
-
     /**
-     * @var string
+     * @var Configuration
      */
-    private $id;
-
-    /**
-     * @var string
-     */
-    private $secret;
-
-    /**
-     * @var string
-     */
-    private $url;
+    private $config;
 
 
-    function __construct($id, $secret, $url)
+    function __construct(Configuration $config)
     {
-        $this->id = $id;
-        $this->secret = $secret;
-        $this->url = $url;
+        $this->config = $config;
     }
 
 
@@ -37,8 +26,8 @@ class PhpSender implements ISender
         $header = array(
             'type' => 'Content-type: application/x-www-form-urlencoded',
             'length' => 'Content-Length: ' . strlen($data),
-            'appId' => 'X-Consumerr-id: ' . $this->id,
-            'appSecret' => 'X-Consumerr-secret: ' . $this->secret,
+            'appId' => 'X-Consumerr-id: ' . $this->config->getId(),
+            'appSecret' => 'X-Consumerr-secret: ' . $this->config->getToken(),
             'X-Consumerr-Encoding: base64',
         );
         $req = @stream_context_create(
@@ -50,7 +39,7 @@ class PhpSender implements ISender
                 )
             )
         );
-        $fp = @fopen($this->url, 'rb', FALSE, $req);
+        $fp = @fopen($this->config->getApiEndpoint(), 'rb', FALSE, $req);
         @fclose($fp);
     }
 

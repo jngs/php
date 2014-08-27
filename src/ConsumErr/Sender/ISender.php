@@ -3,11 +3,13 @@
 namespace ConsumErr\Sender;
 
 
+use ConsumErr\Configuration;
+
 interface ISender
 {
 
 
-    function __construct($id, $secret, $url);
+    function __construct(Configuration $configuration);
 
 
     public function send($data);

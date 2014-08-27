@@ -22,27 +22,6 @@ class ConsumErr
     const VERSION = '1.1.0';
     const VERSION_CODE = 10100;
 
-    private static $options = array(
-        'id' => '',
-        'secret' => '',
-        'url' => 'http://service.consumerr.io/',
-        'sender' => NULL,
-        'error_reporting' => NULL,
-        'exclude' => array(
-            'ip' => array(),
-            'error' => array(),
-        ),
-        'cache' => array(
-            'enable' => FALSE,
-        ),
-    );
-
-    private static $senders = array(
-        'php' => /**/ 'ConsumErr\Sender\PhpSender' /**/ /*5.2*'ConsumErr_PhpSender'*/,
-        'curl' => /**/'ConsumErr\Sender\CurlSender' /**/ /*5.2*'ConsumErr_CurlSender'*/,
-    );
-
-
     /**
      * @var \ConsumErr\Entities\Access
      */
@@ -56,6 +35,9 @@ class ConsumErr
     /** @var bool */
     private static $enabled = FALSE;
 
+    /** @var Configuration */
+    private static $configuration;
+
 
     /**
      * @deprecated
@@ -68,19 +50,23 @@ class ConsumErr
 
     /**
      * Enables Consumerr error handlers
-     * @param array $options
+     * @param array|Configuration $configuration You can set your own instance of Configuration or just config options
      */
-    public static function enable($options = array())
+    public static function enable($configuration = array())
     {
-        self::$options = $options + self::$options;
+        if ($configuration instanceof Configuration) {
+            self::$configuration = $configuration;
+        } else {
+            self::$configuration = new Configuration($configuration);
+        }
+
+        if (self::$configuration->isClientDisabled()) {
+            return; //nothing to do here
+        }
 
         self::initialize();
 
-        if (empty($options['error_reporting'])) {
-            $options['error_reporting'] = E_ALL | E_STRICT ^ E_NOTICE;
-        }
-
-        error_reporting($options['error_reporting']);
+        error_reporting(self::$configuration->getErrorReportingLevel());
 
         set_exception_handler(array(__CLASS__, 'exceptionHandler'));
         set_error_handler(array(__CLASS__, 'errorHandler'));
@@ -89,6 +75,9 @@ class ConsumErr
         self::registerSenderShutdownHandler();
     }
 
+    /**
+     * @internal
+     */
     public static function initialize()
     {
         self::$enabled = TRUE;
@@ -128,11 +117,6 @@ class ConsumErr
         register_shutdown_function(array(__CLASS__, 'senderShutdownHandler'));
     }
 
-    public static function setOptions($options)
-    {
-        self::$options = array_merge(self::$options, $options);
-    }
-
     public static function ignoreAccess($ignore = TRUE)
     {
         self::$enabled = !$ignore;
@@ -163,9 +147,7 @@ class ConsumErr
     protected static function getSender()
     {
         if (!self::$sender) {
-            $senderClass = self::getSenderClass();
-
-            self::$sender = new $senderClass(self::$options['id'], self::$options['secret'], self::$options['url']);
+            self::$sender = self::$configuration->getSenderInstance();
         }
 
         return self::$sender;
@@ -178,15 +160,6 @@ class ConsumErr
     public static function setSender(Sender\ISender $sender)
     {
         self::$sender = $sender;
-    }
-
-
-    /**
-     * @return array
-     */
-    public static function getOptions()
-    {
-        return self::$options;
     }
 
 
@@ -237,9 +210,7 @@ class ConsumErr
      */
     public static function addError(\Exception $exception)
     {
-        if ($exception instanceof \ErrorException &&
-            in_array($exception->getSeverity(), (array)self::$options['exclude']['error'])
-        ) {
+        if ($exception instanceof \ErrorException && self::$configuration->isErrorDisabled($exception->getSeverity())) {
             return NULL;
         }
 
@@ -302,14 +273,7 @@ class ConsumErr
         self::getAccess()->setMemory(function_exists('memory_get_peak_usage') ? memory_get_peak_usage() : NULL);
         self::getAccess()->setTime(-1 * self::getTime() + microtime(TRUE));
 
-        if (!in_array(
-            isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : php_uname('n'),
-            (array)self::$options['exclude']['ip'],
-            TRUE
-        )
-        ) {
-            self::getSender()->send(array((string)self::getAccess()));
-        }
+        self::getSender()->send(array((string)self::getAccess()));
     }
 
 
@@ -324,34 +288,13 @@ class ConsumErr
 
     public static function errorHandler($severity, $message, $file, $line, $context = NULL)
     {
-        if(($severity & error_reporting()) !== $severity) {
+        if (($severity & error_reporting()) !== $severity) {
             return FALSE;
         }
+
         self::addErrorMessage($message, $severity, $file, $line, $context);
+
         return NULL;
-    }
-
-    /**
-     * @return string
-     */
-    public static function getSenderClass()
-    {
-        if (!self::$options['sender']) {
-            if (function_exists('extension_loaded') && extension_loaded('curl')) {
-                $senderClass = /**/'ConsumErr\Sender\CurlSender' /**/ /*5.2*'ConsumErr_CurlSender'*/
-                ;
-            } else {
-                $senderClass = /**/ 'ConsumErr\Sender\PhpSender' /**/ /*5.2*'ConsumErr_PhpSender'*/
-                ;
-            }
-        } else {
-            if (isset(self::$senders[self::$options['sender']])) {
-                self::$options['sender'] = self::$senders[self::$options['sender']];
-            }
-            $senderClass = self::$options['sender'];
-        }
-
-        return $senderClass;
     }
 
     public static function addExtension($extensionName, $versionCode)
@@ -383,10 +326,27 @@ class ConsumErr
      */
     public static function getCliArguments()
     {
-        if(empty($_SERVER['argv'])) {
+        if (empty($_SERVER['argv'])) {
             return '';
         }
-        return '$ '.implode(' ', $_SERVER['argv']);
+
+        return '$ ' . implode(' ', $_SERVER['argv']);
+    }
+
+    /**
+     * @return Configuration
+     */
+    public static function getConfiguration()
+    {
+        return self::$configuration;
+    }
+
+    /**
+     * @param Configuration $configuration
+     */
+    public static function setConfiguration($configuration)
+    {
+        self::$configuration = $configuration;
     }
 
 }
