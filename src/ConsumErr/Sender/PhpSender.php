@@ -39,6 +39,7 @@ class PhpSender implements ISender
             'length' => 'Content-Length: ' . strlen($data),
             'appId' => 'X-Consumerr-id: ' . $this->id,
             'appSecret' => 'X-Consumerr-secret: ' . $this->secret,
+            'X-Consumerr-Encoding: base64',
         );
         $req = @stream_context_create(
             array(

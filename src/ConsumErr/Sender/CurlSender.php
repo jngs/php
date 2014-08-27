@@ -35,6 +35,7 @@ class CurlSender implements ISender
         $header = array(
             'appId' => 'X-Consumerr-id: ' . $this->id,
             'appSecret' => 'X-Consumerr-secret: ' . $this->secret,
+            'X-Consumerr-Encoding: base64',
         );
         $ch = curl_init();
 
