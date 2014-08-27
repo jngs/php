@@ -322,16 +322,13 @@ class ConsumErr
     }
 
 
-    /**
-     * @param integer $num
-     * @param string $str
-     * @param string $file
-     * @param integer $line
-     * @param string|null $context
-     */
-    public static function errorHandler($num, $str, $file, $line, $context = NULL)
+    public static function errorHandler($severity, $message, $file, $line, $context = NULL)
     {
-        self::addErrorMessage($str, $num, $file, $line, $context);
+        if(($severity & error_reporting()) !== $severity) {
+            return FALSE;
+        }
+        self::addErrorMessage($message, $severity, $file, $line, $context);
+        return NULL;
     }
 
     /**
@@ -365,7 +362,7 @@ class ConsumErr
     public static function errorShutdownHandler()
     {
         $error = error_get_last();
-        if (in_array($error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE))) {
+        if (in_array($error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE, E_RECOVERABLE_ERROR, E_USER_ERROR))) {
             self::errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
         }
     }
