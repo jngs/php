@@ -120,7 +120,7 @@ class Configuration
 
     public function getSenderClass($options)
     {
-        if (!$options['sender']) {
+        if (empty($options['sender'])) {
             if (function_exists('extension_loaded') && extension_loaded('curl')) {
                 return /**/
                     'ConsumErr\Sender\CurlSender' /**/ /*5.2*'ConsumErr_CurlSender'*/
