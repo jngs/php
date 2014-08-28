@@ -273,7 +273,9 @@ class ConsumErr
         self::getAccess()->setMemory(function_exists('memory_get_peak_usage') ? memory_get_peak_usage() : NULL);
         self::getAccess()->setTime(-1 * self::getTime() + microtime(TRUE));
 
-        self::getSender()->send(array((string)self::getAccess()));
+        list($accessData, $encoding) = self::encodeData((string) self::getAccess());
+
+        self::getSender()->send($accessData, $encoding);
     }
 
 
@@ -347,6 +349,16 @@ class ConsumErr
     public static function setConfiguration($configuration)
     {
         self::$configuration = $configuration;
+    }
+
+    private static function encodeData($param)
+    {
+        $encoding = 'plain';
+        if(function_exists("gzcompress")) {
+            $encoding = 'gzip';
+            $param = gzcompress($param);
+        }
+        return array(base64_encode($param), $encoding);
     }
 
 }

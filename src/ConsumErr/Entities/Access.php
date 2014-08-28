@@ -96,7 +96,7 @@ class Access
             }
         }
 
-        return base64_encode(json_encode($data));
+        return json_encode($data);
     }
 
 

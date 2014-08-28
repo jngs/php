@@ -19,12 +19,12 @@ class CurlSender implements ISender
     }
 
 
-    public function send($data)
+    public function send($data, $encoding)
     {
         $header = array(
             'appId' => 'X-Consumerr-id: ' . $this->configuration->getId(),
             'appSecret' => 'X-Consumerr-secret: ' . $this->configuration->getToken(),
-            'X-Consumerr-Encoding: base64',
+            'X-Consumerr-Encoding: '.$encoding,
         );
         $ch = curl_init();
 

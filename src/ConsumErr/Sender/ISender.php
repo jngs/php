@@ -12,7 +12,7 @@ interface ISender
     function __construct(Configuration $configuration);
 
 
-    public function send($data);
+    public function send($data, $encoding);
 
 
 }

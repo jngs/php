@@ -19,7 +19,7 @@ class PhpSender implements ISender
     }
 
 
-    public function send($data)
+    public function send($data, $encoding)
     {
 
         $data = http_build_query($data);
@@ -28,7 +28,7 @@ class PhpSender implements ISender
             'length' => 'Content-Length: ' . strlen($data),
             'appId' => 'X-Consumerr-id: ' . $this->config->getId(),
             'appSecret' => 'X-Consumerr-secret: ' . $this->config->getToken(),
-            'X-Consumerr-Encoding: base64',
+            'X-Consumerr-Encoding: '.$encoding,
         );
         $req = @stream_context_create(
             array(
