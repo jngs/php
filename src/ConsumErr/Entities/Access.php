@@ -4,6 +4,13 @@ namespace ConsumErr\Entities;
 
 
 use ConsumErr\ConsumErr;
+/**/
+if (!defined('PHP_VERSION_ID')) {
+    $version = explode('.', PHP_VERSION);
+
+    define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
+}
+/**/
 
 class Access
 {
@@ -41,8 +48,15 @@ class Access
     /**
      * @var string
      */
-    private $versions = array(
+    private $extensions = array(
         ConsumErr::EXTENSION_NAME => ConsumErr::VERSION_CODE
+    );
+
+    /**
+     * @var array
+     */
+    private $libraries = array(
+        'php' => PHP_VERSION_ID,
     );
 
     /**
@@ -212,7 +226,14 @@ class Access
 
     public function addExtensionVersion($name, $versionCode)
     {
-        $this->versions[$name] = $versionCode;
+        $this->extensions[$name] = $versionCode;
+
+        return $this;
+    }
+
+    public function addLibraryVersion($name, $version)
+    {
+        $this->libraries[$name] = $version;
 
         return $this;
     }

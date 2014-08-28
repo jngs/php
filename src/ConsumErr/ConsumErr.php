@@ -304,6 +304,12 @@ class ConsumErr
         self::getAccess()->addExtensionVersion($extensionName, $versionCode);
     }
 
+    /***/
+    public static function addLibrary($name, $versionCode)
+    {
+        self::getAccess()->addLibraryVersion($name, $versionCode);
+    }
+
     public static function errorShutdownHandler()
     {
         $error = error_get_last();
