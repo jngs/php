@@ -4,6 +4,7 @@ namespace ConsumErr\Sender;
 
 
 use ConsumErr\Configuration;
+use ConsumErr\ConsumErr;
 
 class PhpSender implements ISender
 {
@@ -39,8 +40,15 @@ class PhpSender implements ISender
                 )
             )
         );
+
+        $prev = set_error_handler(function($severity, $message, $file) use (&$prev) {
+            ConsumErr::log("Transmission error - ".trim($message));
+            restore_error_handler();
+            return;
+        });
         $fp = @fopen($this->config->getApiEndpoint(), 'rb', FALSE, $req);
         @fclose($fp);
+        restore_error_handler();
     }
 
 }

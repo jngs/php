@@ -220,5 +220,10 @@ class Configuration
         return function_exists("gzcompress") && $this->config['compress'];
     }
 
+    public function getLogFile()
+    {
+        return !empty($this->config['log']) ? $this->config['log'] : NULL;
+    }
+
 
 }

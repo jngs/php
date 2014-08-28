@@ -38,6 +38,9 @@ class ConsumErr
     /** @var Configuration */
     private static $configuration;
 
+    /** @var DebugLogger */
+    private static $logger;
+
 
     /**
      * @deprecated
@@ -55,16 +58,14 @@ class ConsumErr
     public static function enable($configuration = array())
     {
         if ($configuration instanceof Configuration) {
-            self::$configuration = $configuration;
+            self::setConfiguration($configuration);
         } else {
-            self::$configuration = new Configuration($configuration);
+            self::setConfiguration(new Configuration($configuration));
         }
 
-        if (self::$configuration->isClientDisabled()) {
-            return; //nothing to do here
+        if(!self::initialize()) {
+            return;
         }
-
-        self::initialize();
 
         error_reporting(self::$configuration->getErrorReportingLevel());
 
@@ -72,7 +73,7 @@ class ConsumErr
         set_error_handler(array(__CLASS__, 'errorHandler'));
 
         register_shutdown_function(array(__CLASS__, 'errorShutdownHandler'));
-        self::registerSenderShutdownHandler();
+
     }
 
     /**
@@ -80,6 +81,10 @@ class ConsumErr
      */
     public static function initialize()
     {
+        if (self::$configuration->isClientDisabled()) {
+            self::log('Client IP is disabled by current configuration.');
+            return FALSE; //nothing to do here
+        }
         self::$enabled = TRUE;
         self::getTime();
 
@@ -110,16 +115,23 @@ class ConsumErr
             self::getAccess()->setName(self::getCliArguments());
             self::getAccess()->setBackgroundJob(TRUE);
         }
+
+        self::registerSenderShutdownHandler();
+        return TRUE;
     }
 
     public static function registerSenderShutdownHandler()
     {
         register_shutdown_function(array(__CLASS__, 'senderShutdownHandler'));
+        self::log("Sender shutdown handler registered");
     }
 
     public static function ignoreAccess($ignore = TRUE)
     {
         self::$enabled = !$ignore;
+        if($ignore) {
+            self::log("Consumerr disabled by ignoreAccess call. Access will by ignored.");
+        }
     }
 
     public static function isEnabled()
@@ -201,6 +213,7 @@ class ConsumErr
     public static function setBackgroundJob($backgroundJob = TRUE)
     {
         self::getAccess()->getBackgroundJob($backgroundJob);
+        self::log("Current access set to background job set.");
     }
 
 
@@ -211,13 +224,15 @@ class ConsumErr
     public static function addError(\Exception $exception)
     {
         if ($exception instanceof \ErrorException && self::$configuration->isErrorDisabled($exception->getSeverity())) {
+            self::log("Error handler - severity {$exception->getSeverity()} is ignored by current disabled-severity setting.");
             return NULL;
         }
 
-        $exception = new Entities\Error($exception);
-        self::getAccess()->addError($exception);
+        $error = new Entities\Error($exception);
+        self::getAccess()->addError($error);
+        self::log("Added error - '".get_class($exception)." - ".$exception->getMessage()."'");
 
-        return $exception;
+        return $error;
     }
 
 
@@ -249,7 +264,9 @@ class ConsumErr
      */
     public static function addEvent($category, $action, $label = '', $value = '')
     {
-        self::getAccess()->addEvent(new Entities\Event($category, $action, $label, $value));
+        $event = new Entities\Event($category, $action, $label, $value);
+        self::getAccess()->addEvent($event);
+        self::log("Added event '".json_encode($event->__toArray())."'");
     }
 
 
@@ -258,7 +275,9 @@ class ConsumErr
      */
     public static function addPart($name = '')
     {
-        self::getAccess()->addPart(new Entities\Part(-1 * self::getTime() + microtime(TRUE), $name));
+        $part = new Entities\Part(-1 * self::getTime() + microtime(TRUE), $name);
+        self::getAccess()->addPart($part);
+        self::log("Added part '".json_encode($part->__toArray())."'");
     }
 
 
@@ -268,6 +287,7 @@ class ConsumErr
     public static function senderShutdownHandler()
     {
         if (!self::$enabled) {
+            self::log("Shutdown - consumerr is disabled, nothing will be sent.");
             return;
         }
         self::getAccess()->setMemory(function_exists('memory_get_peak_usage') ? memory_get_peak_usage() : NULL);
@@ -275,7 +295,11 @@ class ConsumErr
 
         list($accessData, $encoding) = self::encodeData((string) self::getAccess());
 
-        self::getSender()->send($accessData, $encoding);
+        self::log("Shutdown - data encoded with $encoding, data length ".strlen($accessData));
+        $sender = self::getSender();
+        self::log("Shutdown - will use ".get_class($sender)." for sending data.");
+        $sender->send(array($accessData), $encoding);
+        self::log("Shutdown complete.");
     }
 
 
@@ -291,6 +315,7 @@ class ConsumErr
     public static function errorHandler($severity, $message, $file, $line, $context = NULL)
     {
         if (($severity & error_reporting()) !== $severity) {
+            self::log("Error handler - severity $severity is ignored in current error_reporting setting.");
             return FALSE;
         }
 
@@ -302,6 +327,7 @@ class ConsumErr
     public static function addExtension($extensionName, $versionCode)
     {
         self::getAccess()->addExtensionVersion($extensionName, $versionCode);
+        self::log("Registered extension  $extensionName");
     }
 
     /***/
@@ -355,6 +381,12 @@ class ConsumErr
     public static function setConfiguration($configuration)
     {
         self::$configuration = $configuration;
+        if(self::$configuration->getLogFile()) {
+            self::$logger = new DebugLogger(self::$configuration->getLogFile());
+        } else {
+            self::$logger = NULL;
+        }
+        self::log("Configuration set - token '".self::$configuration->getToken()."'");
     }
 
     private static function encodeData($param)
@@ -365,6 +397,13 @@ class ConsumErr
             $param = gzcompress($param);
         }
         return array(base64_encode($param), $encoding);
+    }
+
+    public static function log($string)
+    {
+        if(self::$logger) {
+            self::$logger->log($string);
+        }
     }
 
 }

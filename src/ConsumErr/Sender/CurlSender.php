@@ -4,6 +4,7 @@ namespace ConsumErr\Sender;
 
 
 use ConsumErr\Configuration;
+use ConsumErr\ConsumErr;
 
 class CurlSender implements ISender
 {
@@ -37,6 +38,16 @@ class CurlSender implements ISender
         curl_setopt($ch, CURLOPT_TIMEOUT, 2);
 
         curl_exec($ch);
+        if($this->configuration->getLogFile()) { //logging enabled
+            if(curl_errno($ch) !== 0) {
+                ConsumErr::log("Transmission error - ".curl_error($ch));
+            }
+            $info = curl_getinfo($ch);
+            if($info['http_code'] != 200) {
+                ConsumErr::log("Transmission error - API returned HTTP ".$info['http_code']);
+            }
+        }
+        @curl_close($ch);
     }
 
 }
