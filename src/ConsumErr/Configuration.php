@@ -25,6 +25,7 @@ class Configuration
         'token' => '',
         'url' => 'http://service.consumerr.io/',
         'sender' => NULL,
+        'compress' => TRUE,
         'error_reporting' => NULL,
         'disabled' => array(
             'ip' => array(),
@@ -212,6 +213,11 @@ class Configuration
     public function isErrorDisabled($severity)
     {
         return  (($severity & $this->config['disabled']['severity']) !== $severity);
+    }
+
+    public function isCompressionEnabled()
+    {
+        return function_exists("gzcompress") && $this->config['compress'];
     }
 
 

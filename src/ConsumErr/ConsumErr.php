@@ -360,7 +360,7 @@ class ConsumErr
     private static function encodeData($param)
     {
         $encoding = 'plain';
-        if(function_exists("gzcompress")) {
+        if(self::$configuration->isCompressionEnabled()) {
             $encoding = 'gzip';
             $param = gzcompress($param);
         }
