@@ -57,6 +57,9 @@ class ConsumErr
      */
     public static function enable($configuration = array())
     {
+        if(is_string($configuration)) {
+            $configuration = array('token' => $configuration);
+        }
         if ($configuration instanceof Configuration) {
             self::setConfiguration($configuration);
         } else {
