@@ -12,3 +12,5 @@ require_once __DIR__ . '/ConsumErr/Sender/CurlSender.php';
 require_once __DIR__ . '/ConsumErr/Configuration.php';
 require_once __DIR__ . '/ConsumErr/DebugLogger.php';
 require_once __DIR__ . '/ConsumErr/ConsumErr.php';
+
+require_once __DIR__ . '/ConsumErr/exceptions.php';
