@@ -20,8 +20,6 @@ class Configuration
     );
 
     private $defaults = array(
-        'id' => '',
-        'secret' => '',
         'token' => '',
         'url' => 'http://service.consumerr.io/',
         'sender' => NULL,
@@ -87,12 +85,12 @@ class Configuration
     private function validateConfiguration($options)
     {
         $config = $this->mergeConfiguration($options, $this->defaults);
-
-        if (empty($config['id'])) {
-            AssertionException::isEmpty('id');
+        if(empty($config['token']) && !empty($config['secret'])) {
+            $config['token'] = $config['secret']; //BC
         }
-        if (empty($config['secret'])) {
-            AssertionException::isEmpty('secret');
+
+        if (empty($config['token'])) {
+            AssertionException::isEmpty('token');
         }
 
         $config['sender'] = $this->getSenderClass($options);
@@ -195,14 +193,9 @@ class Configuration
         return $result;
     }
 
-    public function getId()
-    {
-        return $this->config['id'];
-    }
-
     public function getToken()
     {
-        return empty($this->config['token']) ? $this->config['secret'] : $this->config['token'];
+        return $this->config['token'];
     }
 
     public function getApiEndpoint()

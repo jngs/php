@@ -27,7 +27,6 @@ class PhpSender implements ISender
         $header = array(
             'type' => 'Content-type: application/x-www-form-urlencoded',
             'length' => 'Content-Length: ' . strlen($data),
-            'appId' => 'X-Consumerr-id: ' . $this->config->getId(),
             'appSecret' => 'X-Consumerr-secret: ' . $this->config->getToken(),
             'X-Consumerr-Encoding: '.$encoding,
         );
