@@ -7,6 +7,14 @@ use ConsumErr\Entities;
 /**/
 class_alias('ConsumErr\ConsumErr', 'ConsumErr'); /**/
 
+/*5.2*
+if (!defined('PHP_VERSION_ID')) {
+    $version = explode('.', PHP_VERSION);
+
+    define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
+}
+*/
+
 if (!defined("E_DEPRECATED")) {
     define("E_DEPRECATED", 8192);
 }

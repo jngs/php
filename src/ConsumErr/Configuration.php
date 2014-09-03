@@ -120,7 +120,7 @@ class Configuration
     public function getSenderClass($options)
     {
         if (empty($options['sender'])) {
-            if (function_exists('extension_loaded') && extension_loaded('curl')) {
+            if (function_exists('extension_loaded') && extension_loaded('curl') && PHP_VERSION_ID >= 503000) {
                 return /**/
                     'ConsumErr\Sender\CurlSender' /**/ /*5.2*'ConsumErr_CurlSender'*/
                     ;
@@ -205,7 +205,7 @@ class Configuration
 
     public function isErrorDisabled($severity)
     {
-        return  (($severity & $this->config['disabled']['severity']) !== $severity);
+        return  (($severity & $this->config['disabled']['severity']) === $severity);
     }
 
     public function isCompressionEnabled()
