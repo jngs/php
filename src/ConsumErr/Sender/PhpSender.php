@@ -40,7 +40,7 @@ class PhpSender implements ISender
             )
         );
 
-        $prev = set_error_handler(function($severity, $message, $file) use (&$prev) {
+        set_error_handler(function($severity, $message, $file) {
             ConsumErr::log("Transmission error - ".trim($message));
             restore_error_handler();
             return;
