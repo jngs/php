@@ -3,23 +3,28 @@
     "type": "library",
     "description": "Consumerr error and exception logger for PHP",
     "license": ["MIT"],
-    "keywords": ["consumerr", "php", "debug", "logging"],
+    "keywords": [
+        "consumerr",
+        "php",
+        "debug",
+        "logging"
+    ],
     "homepage": "http://consumerr.io",
     "require": {
         "php": ">= 5.3.0",
         "ext-json": "*"
     },
-    "require-dev":{
-        "nette/tester" : "@stable",
+    "require-dev": {
+        "nette/tester": "@stable",
         "jakub-onderka/php-parallel-lint": "~0.6"
     },
     "suggest": {
-        "ext-curl":"Allows sending data via cURL"
+        "ext-curl": "Allows sending data via cURL"
     },
     "support": {
-		"email": "support@consumerr.io",
-		"issues": "https://github.com/consumerr/php/issues"
-	},
+        "email": "support@consumerr.io",
+        "issues": "https://github.com/consumerr/php/issues"
+    },
     "autoload": {
         "classmap": [
             "./src"

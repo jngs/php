@@ -9,10 +9,10 @@ interface ISender
 {
 
 
-    function __construct(Configuration $configuration);
+	function __construct(Configuration $configuration);
 
 
-    public function send($data, $encoding);
+	public function send($data, $encoding);
 
 
 }
