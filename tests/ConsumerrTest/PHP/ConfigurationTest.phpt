@@ -26,6 +26,7 @@ class ConfigurationTest extends TestCase {
 
 		Assert::same('token123', $conf->getToken());
 		Assert::true($conf->isErrorDisabled(E_NOTICE));
+		Assert::same(E_ALL & ~E_NOTICE, $conf->getErrorReportingLevel());
 		//test bc
 
 		$conf = new Configuration(array('secret' => '123', 'id' => '345'));
@@ -43,6 +44,15 @@ class ConfigurationTest extends TestCase {
 		Assert::true($conf->isErrorDisabled(E_NOTICE));
 		Assert::same('log.log', $conf->getLogFile());
 		Assert::same('ConsumErr\\Sender\\PhpSender',get_class($conf->getSenderInstance()));
+
+		$conf = new Configuration(array(
+				'token' => '123',
+				'error_reporting' => E_ALL,
+			));
+
+		Assert::same(E_ALL, $conf->getErrorReportingLevel());
+		Assert::false($conf->isErrorDisabled(E_NOTICE));
+		Assert::false($conf->isErrorDisabled(E_CORE_ERROR));
 
 
 	}

@@ -37,11 +37,7 @@ class Configuration
 
     public function __construct($config = array())
     {
-        if(PHP_VERSION_ID < 50400) {
-            $this->defaultErrorReporting = (E_ALL | E_STRICT) & ~E_NOTICE;
-        } else {
-            $this->defaultErrorReporting = E_ALL & ~E_NOTICE;
-        }
+		$this->defaultErrorReporting = E_ALL & ~E_NOTICE;
         $this->config = $this->validateConfiguration($config);
     }
 
@@ -97,7 +93,7 @@ class Configuration
 
         $config['error_reporting'] = $this->processReportingConfig($config['error_reporting'], $this->defaultErrorReporting);
 
-        $config['disabled']['severity'] = $this->processReportingConfig($config['disabled']['severity'], $this->defaultErrorReporting ^ ($config['error_reporting'] | E_NOTICE));
+        $config['disabled']['severity'] = $this->processReportingConfig($config['disabled']['severity'], $config['error_reporting'] ^ ($this->defaultErrorReporting | E_NOTICE));
 
         if (!empty($config['disabled']['ip'])) {
             $list = $config['disabled']['ip'];
@@ -120,7 +116,7 @@ class Configuration
     public function getSenderClass($options)
     {
         if (empty($options['sender'])) {
-            if (function_exists('extension_loaded') && extension_loaded('curl') && PHP_VERSION_ID >= 503000) {
+            if (function_exists('extension_loaded') && extension_loaded('curl') && PHP_VERSION_ID >= 50300) {
                 return /**/
                     'ConsumErr\Sender\CurlSender' /**/ /*5.2*'ConsumErr_CurlSender'*/
                     ;
