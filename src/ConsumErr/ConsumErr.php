@@ -27,8 +27,8 @@ class ConsumErr
 {
 
 	const EXTENSION_NAME = 'php';
-	const VERSION = '1.2.0';
-	const VERSION_CODE = 10200;
+	const VERSION = '1.2.1';
+	const VERSION_CODE = 10201;
 
 	/**
 	 * @var \ConsumErr\Entities\Access
