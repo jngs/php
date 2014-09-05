@@ -38,7 +38,7 @@ class Configuration
     public function __construct($config = array())
     {
         if(PHP_VERSION_ID < 50400) {
-            $this->defaultErrorReporting = E_ALL | E_STRICT & ~E_NOTICE;
+            $this->defaultErrorReporting = (E_ALL | E_STRICT) & ~E_NOTICE;
         } else {
             $this->defaultErrorReporting = E_ALL & ~E_NOTICE;
         }
@@ -97,7 +97,7 @@ class Configuration
 
         $config['error_reporting'] = $this->processReportingConfig($config['error_reporting'], $this->defaultErrorReporting);
 
-        $config['disabled']['severity'] = $this->processReportingConfig($config['disabled']['severity'], $config['error_reporting']);
+        $config['disabled']['severity'] = $this->processReportingConfig($config['disabled']['severity'], $this->defaultErrorReporting ^ ($config['error_reporting'] | E_NOTICE));
 
         if (!empty($config['disabled']['ip'])) {
             $list = $config['disabled']['ip'];
