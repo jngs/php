@@ -10,6 +10,7 @@
         "ext-json": "*"
     },
     "require-dev":{
+        "nette/tester" : "@stable",
         "jakub-onderka/php-parallel-lint": "~0.6"
     },
     "suggest": {
