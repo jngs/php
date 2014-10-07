@@ -4,9 +4,9 @@
 namespace ConsumerrTest\PHP;
 
 
-use ConsumErr\Configuration;
-use ConsumErr\Logger;
-use ConsumErr\NetteConsumErr;
+use Consumerr\Configuration;
+use Consumerr\Logger;
+use Consumerr\NetteConsumerr;
 use Nette\Application\Application;
 use Nette\Diagnostics\Debugger;
 use Tester\Assert;
@@ -43,7 +43,7 @@ class ConfigurationTest extends TestCase
 		Assert::false($conf->isErrorDisabled(E_PARSE));
 		Assert::true($conf->isErrorDisabled(E_NOTICE));
 		Assert::same('log.log', $conf->getLogFile());
-		Assert::same('ConsumErr\\Sender\\PhpSender', get_class($conf->getSenderInstance()));
+		Assert::same('Consumerr\\Sender\\PhpSender', get_class($conf->getSenderInstance()));
 
 		$conf = new Configuration(
 			array(
@@ -64,7 +64,7 @@ class ConfigurationTest extends TestCase
 		Assert::exception(
 			function () {
 				$c = new Configuration();
-			}, 'ConsumErr\\AssertionException'
+			}, 'Consumerr\\AssertionException'
 		);
 
 		Assert::error(

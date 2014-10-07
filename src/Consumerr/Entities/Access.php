@@ -1,9 +1,9 @@
 <?php
 
-namespace ConsumErr\Entities;
+namespace Consumerr\Entities;
 
 
-use ConsumErr\ConsumErr;
+use Consumerr\Consumerr;
 
 
 class Access
@@ -43,7 +43,7 @@ class Access
 	 * @var string
 	 */
 	private $extensions = array(
-		ConsumErr::EXTENSION_NAME => ConsumErr::VERSION_CODE
+		Consumerr::EXTENSION_NAME => Consumerr::VERSION_CODE
 	);
 
 	/**
@@ -59,17 +59,17 @@ class Access
 	private $type = 0;
 
 	/**
-	 * @var \ConsumErr\Entities\Event[]
+	 * @var \Consumerr\Entities\Event[]
 	 */
 	private $events = array();
 
 	/**
-	 * @var \ConsumErr\Entities\Error[]
+	 * @var \Consumerr\Entities\Error[]
 	 */
 	private $errors = array();
 
 	/**
-	 * @var \ConsumErr\Entities\Part[]
+	 * @var \Consumerr\Entities\Part[]
 	 */
 	private $parts = array();
 
@@ -233,7 +233,7 @@ class Access
 	}
 
 	/**
-	 * @param \ConsumErr\Entities\Error $error
+	 * @param \Consumerr\Entities\Error $error
 	 * @return Access
 	 */
 	public function addError(Error $error)
@@ -245,7 +245,7 @@ class Access
 
 
 	/**
-	 * @return \ConsumErr\Entities\Error[]
+	 * @return \Consumerr\Entities\Error[]
 	 */
 	public function getErrors()
 	{
@@ -254,7 +254,7 @@ class Access
 
 
 	/**
-	 * @param \ConsumErr\Entities\Event $event
+	 * @param \Consumerr\Entities\Event $event
 	 * @return Access
 	 */
 	public function addEvent(Event $event)
@@ -266,7 +266,7 @@ class Access
 
 
 	/**
-	 * @return \ConsumErr\Event[]
+	 * @return \Consumerr\Event[]
 	 */
 	public function getEvents()
 	{
@@ -275,7 +275,7 @@ class Access
 
 
 	/**
-	 * @param \ConsumErr\Entities\Part[] $part
+	 * @param \Consumerr\Entities\Part[] $part
 	 * @return Access
 	 */
 	public function addPart(Part $part)
@@ -287,7 +287,7 @@ class Access
 
 
 	/**
-	 * @return \ConsumErr\Entities\Part[]
+	 * @return \Consumerr\Entities\Part[]
 	 */
 	public function getParts()
 	{

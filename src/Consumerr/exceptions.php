@@ -1,6 +1,6 @@
 <?php
 
-namespace ConsumErr;
+namespace Consumerr;
 
 class AssertionException extends \LogicException
 {

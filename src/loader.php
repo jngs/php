@@ -1,16 +1,16 @@
 <?php
 
-require_once __DIR__ . '/ConsumErr/Entities/Error.php';
-require_once __DIR__ . '/ConsumErr/Entities/Event.php';
-require_once __DIR__ . '/ConsumErr/Entities/Part.php';
-require_once __DIR__ . '/ConsumErr/Entities/Access.php';
+require_once __DIR__ . '/Consumerr/Entities/Error.php';
+require_once __DIR__ . '/Consumerr/Entities/Event.php';
+require_once __DIR__ . '/Consumerr/Entities/Part.php';
+require_once __DIR__ . '/Consumerr/Entities/Access.php';
 
-require_once __DIR__ . '/ConsumErr/Sender/ISender.php';
-require_once __DIR__ . '/ConsumErr/Sender/PhpSender.php';
-require_once __DIR__ . '/ConsumErr/Sender/CurlSender.php';
+require_once __DIR__ . '/Consumerr/Sender/ISender.php';
+require_once __DIR__ . '/Consumerr/Sender/PhpSender.php';
+require_once __DIR__ . '/Consumerr/Sender/CurlSender.php';
 
-require_once __DIR__ . '/ConsumErr/Configuration.php';
-require_once __DIR__ . '/ConsumErr/DebugLogger.php';
-require_once __DIR__ . '/ConsumErr/ConsumErr.php';
+require_once __DIR__ . '/Consumerr/Configuration.php';
+require_once __DIR__ . '/Consumerr/DebugLogger.php';
+require_once __DIR__ . '/Consumerr/Consumerr.php';
 
-require_once __DIR__ . '/ConsumErr/exceptions.php';
+require_once __DIR__ . '/Consumerr/exceptions.php';

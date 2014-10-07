@@ -1,6 +1,6 @@
 <?php
 
-namespace ConsumErr\Entities;
+namespace Consumerr\Entities;
 
 
 class Part

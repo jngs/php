@@ -1,5 +1,5 @@
 <?php
-namespace ConsumErr;
+namespace Consumerr;
 
 
 class Configuration
@@ -7,9 +7,9 @@ class Configuration
 
 	private $senderAlias = array(
 		'php' => /**/
-			'ConsumErr\Sender\PhpSender' /**/ /*5.2*'ConsumErr_PhpSender'*/,
+			'Consumerr\Sender\PhpSender' /**/ /*5.2*'Consumerr_PhpSender'*/,
 		'curl' => /**/
-			'ConsumErr\Sender\CurlSender' /**/ /*5.2*'ConsumErr_CurlSender'*/,
+			'Consumerr\Sender\CurlSender' /**/ /*5.2*'Consumerr_CurlSender'*/,
 	);
 
 	private $severityAlias = array(
@@ -118,11 +118,11 @@ class Configuration
 		if (empty($options['sender'])) {
 			if (function_exists('extension_loaded') && extension_loaded('curl') && PHP_VERSION_ID >= 50300) {
 				return /**/
-					'ConsumErr\Sender\CurlSender' /**/ /*5.2*'ConsumErr_CurlSender'*/
+					'Consumerr\Sender\CurlSender' /**/ /*5.2*'Consumerr_CurlSender'*/
 					;
 			} else {
 				return /**/
-					'ConsumErr\Sender\PhpSender' /**/ /*5.2*'ConsumErr_PhpSender'*/
+					'Consumerr\Sender\PhpSender' /**/ /*5.2*'Consumerr_PhpSender'*/
 					;
 			}
 		} else {

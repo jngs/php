@@ -1,10 +1,10 @@
 <?php
 
-namespace ConsumErr\Sender;
+namespace Consumerr\Sender;
 
 
-use ConsumErr\Configuration;
-use ConsumErr\ConsumErr;
+use Consumerr\Configuration;
+use Consumerr\Consumerr;
 
 class PhpSender implements ISender
 {
@@ -42,7 +42,7 @@ class PhpSender implements ISender
 
 		set_error_handler(
 			function ($severity, $message, $file) {
-				ConsumErr::log("Transmission error - " . trim($message));
+				Consumerr::log("Transmission error - " . trim($message));
 				restore_error_handler();
 
 				return;

@@ -1,11 +1,11 @@
 <?php
 
-namespace ConsumErr;
+namespace Consumerr;
 
-use ConsumErr\Entities;
+use Consumerr\Entities;
 
 /**/
-class_alias('ConsumErr\ConsumErr', 'ConsumErr'); /**/
+class_alias('Consumerr\Consumerr', 'Consumerr'); /**/
 
 /*5.2*
 if (!defined('PHP_VERSION_ID')) {
@@ -23,20 +23,20 @@ if (!defined("E_USER_DEPRECATED")) {
 }
 
 
-class ConsumErr
+class Consumerr
 {
 
 	const EXTENSION_NAME = 'php';
-	const VERSION = '1.2.1';
-	const VERSION_CODE = 10201;
+	const VERSION = '1.3.0';
+	const VERSION_CODE = 10300;
 
 	/**
-	 * @var \ConsumErr\Entities\Access
+	 * @var \Consumerr\Entities\Access
 	 */
 	private static $access;
 
 	/**
-	 * @var \ConsumErr\Sender\ISender
+	 * @var \Consumerr\Sender\ISender
 	 */
 	private static $sender;
 
@@ -232,7 +232,7 @@ class ConsumErr
 
 	/**
 	 * @param \Exception $exception
-	 * @return \ConsumErr\Entities\Error
+	 * @return \Consumerr\Entities\Error
 	 */
 	public static function addError(\Exception $exception)
 	{
@@ -256,7 +256,7 @@ class ConsumErr
 	 * @param string $file
 	 * @param integer $line
 	 * @param array $context
-	 * @return \ConsumErr\Entities\Error
+	 * @return \Consumerr\Entities\Error
 	 */
 	public static function addErrorMessage($message, $num = E_USER_ERROR, $file = '', $line = 0, $context = array())
 	{

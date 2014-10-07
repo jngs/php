@@ -1,9 +1,9 @@
 <?php
 
-namespace ConsumErr\Sender;
+namespace Consumerr\Sender;
 
 
-use ConsumErr\Configuration;
+use Consumerr\Configuration;
 
 interface ISender
 {
