@@ -5,10 +5,6 @@ namespace ConsumerrTest\PHP;
 
 
 use Consumerr\Configuration;
-use Consumerr\Logger;
-use Consumerr\NetteConsumerr;
-use Nette\Application\Application;
-use Nette\Diagnostics\Debugger;
 use Tester\Assert;
 
 require_once __DIR__ . '/../bootstrap.php';

@@ -266,7 +266,7 @@ class Access
 
 
 	/**
-	 * @return \Consumerr\Event[]
+	 * @return \Consumerr\Entities\Event[]
 	 */
 	public function getEvents()
 	{

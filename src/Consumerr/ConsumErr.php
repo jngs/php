@@ -355,7 +355,8 @@ class Consumerr
 	public static function errorShutdownHandler()
 	{
 		$error = error_get_last();
-		if (in_array($error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE, E_RECOVERABLE_ERROR, E_USER_ERROR))) {
+		if (in_array($error['type'],
+			array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE, E_RECOVERABLE_ERROR, E_USER_ERROR))) {
 			self::errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
 		}
 	}

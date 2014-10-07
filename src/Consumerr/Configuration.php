@@ -91,9 +91,11 @@ class Configuration
 
 		$config['sender'] = $this->getSenderClass($options);
 
-		$config['error_reporting'] = $this->processReportingConfig($config['error_reporting'], $this->defaultErrorReporting);
+		$config['error_reporting'] = $this->processReportingConfig($config['error_reporting'],
+			$this->defaultErrorReporting);
 
-		$config['disabled']['severity'] = $this->processReportingConfig($config['disabled']['severity'], $config['error_reporting'] ^ ($this->defaultErrorReporting | E_NOTICE));
+		$config['disabled']['severity'] = $this->processReportingConfig($config['disabled']['severity'],
+			$config['error_reporting'] ^ ($this->defaultErrorReporting | E_NOTICE));
 
 		if (!empty($config['disabled']['ip'])) {
 			$list = $config['disabled']['ip'];
@@ -106,7 +108,8 @@ class Configuration
 			trigger_error("Exclude config option is deprecated, use 'disabled' instead", E_USER_DEPRECATED);
 		}
 		if (isset($config['exclude']['error'])) {
-			trigger_error("Exclude-error config option is deprecated, use 'disabled-severity' instead", E_USER_DEPRECATED);
+			trigger_error("Exclude-error config option is deprecated, use 'disabled-severity' instead",
+				E_USER_DEPRECATED);
 		}
 
 		return $config;
