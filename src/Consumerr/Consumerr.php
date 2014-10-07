@@ -225,7 +225,7 @@ class Consumerr
 	 */
 	public static function setBackgroundJob($backgroundJob = TRUE)
 	{
-		self::getAccess()->getBackgroundJob($backgroundJob);
+		self::getAccess()->setBackgroundJob($backgroundJob);
 		self::log("Current access set to background job set.");
 	}
 
