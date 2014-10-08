@@ -1,19 +1,23 @@
-Consumerr/php
-=============
+## About
 
+**Consumerr** is a lightweight error monitoring system that is damn fast and easy to use. Consumerr works just with PHP, but more languages coming soon (Javascript, ActionScript, Node.js, ...).
 
-Main settings
---------------
+More on http://consumerr.io
 
-| key               | default value                                | description                     |
-|:------------------|:---------------------------------------------|:--------------------------------|
-| `id`              | *(string)*                                   | Application identifier          |
-| `secret`          | *(string)*                                   | Application secret code         |
-| `url`             | *(string)* **https://service.consumerr.io/** | Url or IP address to API server |
-| `sender`          | *(string)* **ConsumErr\Sender\PhpSender**    | Class who send data             |
-| `exclude`         | *(array)*                                    | *Section*                       |
-| `exclude` `ip`    | *(array)* **[]**                             | List of exclude IP address      |
-| `exclude` `error` | *(array)* **[]**                             | List of exclude error types     |
-| `cache`           | *(array)*                                    | *Section*                       |
-| `cache` `enable`  | *(bool)* **FALSE**                           | Send multiple request at once   |
+## Features
 
+* Easy installation
+* Damn fast system
+* Scalable API
+* Reporting errors, warnings, notices
+* Custom events
+* Saving accesses, parts
+* Caching requests
+* Simple tiny bugtracker
+* Performance analytics and statistics
+* Notifications
+* Great for freelancers
+* Awesome for organizations
+* Responsive reports
+
+**Installation guide and other info is on [wiki here](https://github.com/Consumerr/php/wiki).**
