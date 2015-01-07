@@ -133,7 +133,7 @@ class Configuration
 				return $this->senderAlias[$options['sender']];
 			} else {
 				if (!class_exists($options['sender'])) {
-					throw new AssertionException("Sender class {$options['class']} was not found.");
+					throw new AssertionException("Sender class {$options['sender']} was not found.");
 				}
 
 				return $options['sender'];

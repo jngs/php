@@ -154,9 +154,10 @@ class Consumerr
 
 
 	/**
+	 * @internal
 	 * @return Entities\Access
 	 */
-	protected static function getAccess()
+	public static function getAccess()
 	{
 		if (!self::$access) {
 			self::$access = new Entities\Access;
