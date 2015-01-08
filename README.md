@@ -2,7 +2,11 @@
 
 **Consumerr** is a lightweight error monitoring system that is damn fast and easy to use. Consumerr works just with PHP, but more languages coming soon (Javascript, ActionScript, Node.js, ...).
 
-More on [http://consumerr.io](http://consumerr.io?utm_source=github&utm_medium=readme)
+More on [http://www.consumerr.io](http://consumerr.io?utm_source=github&utm_medium=readme)
+
+[![Build Status](https://travis-ci.org/Consumerr/php.svg)](https://travis-ci.org/Consumerr/php)
+
+[![Downloads](http://img.shields.io/packagist/dt/consumerr/php.svg)](https://packagist.org/packages/consumerr/php) 
 
 ## Features
 
