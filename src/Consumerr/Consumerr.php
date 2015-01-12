@@ -3,6 +3,7 @@
 namespace Consumerr;
 
 use Consumerr\Entities;
+use Consumerr\Sender\MessageFactory;
 
 /**/
 class_alias('Consumerr\Consumerr', 'Consumerr'); /**/
@@ -65,33 +66,35 @@ class Consumerr
 	 */
 	public static function enable($configuration = array())
 	{
-		if (is_string($configuration)) {
-			$configuration = array('token' => $configuration);
-		}
-		if ($configuration instanceof Configuration) {
-			self::setConfiguration($configuration);
-		} else {
-			self::setConfiguration(new Configuration($configuration));
-		}
+		self::setConfiguration($configuration);
 
 		if (!self::initialize()) {
 			return;
 		}
 
 		error_reporting(self::$configuration->getErrorReportingLevel());
-
-		set_exception_handler(array(__CLASS__, 'exceptionHandler'));
-		set_error_handler(array(__CLASS__, 'errorHandler'));
-
-		register_shutdown_function(array(__CLASS__, 'errorShutdownHandler'));
-
 	}
 
 	/**
-	 * @internal
+	 * Initialize Consumerr WITHOUT enabling its error handlers. Usefull when error handling is done elsewhere.
+	 *
+	 * @param Configuration|string|array $configuration optionally set configuration @see setConfiguration
+	 * @return bool
 	 */
-	public static function initialize()
+	public static function initialize($configuration = NULL)
 	{
+		if($configuration) {
+			self::setConfiguration($configuration);
+		}
+
+		if(!self::$configuration instanceof Configuration) {
+			throw new InvalidConfigurationException("Consumerr is not properly configured.");
+		}
+		if(self::$enabled) {
+			self::log("Multiple calls to initialize - ignore");
+			return FALSE;
+		}
+
 		if (self::$configuration->isClientDisabled()) {
 			self::log('Client IP is disabled by current configuration.');
 
@@ -306,40 +309,10 @@ class Consumerr
 
 			return;
 		}
-		self::getAccess()->setMemory(function_exists('memory_get_peak_usage') ? memory_get_peak_usage() : NULL);
-		self::getAccess()->setTime(-1 * self::getTime() + microtime(TRUE));
-
-		list($accessData, $encoding) = self::encodeData((string)self::getAccess());
-
-		self::log("Shutdown - data encoded with $encoding, data length " . strlen($accessData));
-		$sender = self::getSender();
-		self::log("Shutdown - will use " . get_class($sender) . " for sending data.");
-		$sender->send(array($accessData), $encoding);
-		self::log("Shutdown complete.");
+		$messageFactory = new MessageFactory(self::getAccess());
+		register_shutdown_function(array($messageFactory, 'send')); //ensure sender is called last
 	}
 
-
-	/**
-	 * @param \Exception $e
-	 */
-	public static function exceptionHandler(\Exception $e)
-	{
-		self::addError($e);
-	}
-
-
-	public static function errorHandler($severity, $message, $file, $line, $context = NULL)
-	{
-		if (($severity & error_reporting()) !== $severity) {
-			self::log("Error handler - severity $severity is ignored in current error_reporting setting.");
-
-			return FALSE;
-		}
-
-		self::addErrorMessage($message, $severity, $file, $line, $context);
-
-		return NULL;
-	}
 
 	public static function addExtension($extensionName, $versionCode)
 	{
@@ -351,15 +324,6 @@ class Consumerr
 	public static function addLibrary($name, $versionCode)
 	{
 		self::getAccess()->addLibraryVersion($name, $versionCode);
-	}
-
-	public static function errorShutdownHandler()
-	{
-		$error = error_get_last();
-		if (in_array($error['type'],
-			array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE, E_RECOVERABLE_ERROR, E_USER_ERROR))) {
-			self::errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
-		}
 	}
 
 	/**
@@ -394,10 +358,17 @@ class Consumerr
 	}
 
 	/**
-	 * @param Configuration $configuration
+	 * @param Configuration|array|string $configuration
 	 */
 	public static function setConfiguration($configuration)
 	{
+		if (is_string($configuration)) {
+			$configuration = array('token' => $configuration);
+		}
+		if (!$configuration instanceof Configuration) {
+			$configuration = new Configuration($configuration);
+		}
+
 		self::$configuration = $configuration;
 		if (self::$configuration->getLogFile()) {
 			self::$logger = new DebugLogger(self::$configuration->getLogFile());
@@ -405,17 +376,6 @@ class Consumerr
 			self::$logger = NULL;
 		}
 		self::log("Configuration set - token '" . self::$configuration->getToken() . "'");
-	}
-
-	private static function encodeData($param)
-	{
-		$encoding = 'plain';
-		if (self::$configuration->isCompressionEnabled()) {
-			$encoding = 'gzip';
-			$param = gzcompress($param);
-		}
-
-		return array(base64_encode($param), $encoding);
 	}
 
 	public static function log($string)

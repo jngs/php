@@ -9,3 +9,7 @@ class AssertionException extends \LogicException
 		throw new self("You have to fill config option '$field'.");
 	}
 }
+
+class InvalidConfigurationException extends \RuntimeException
+{
+}
