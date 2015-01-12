@@ -16,7 +16,7 @@
     },
     "require-dev": {
         "nette/tester": "@stable",
-        "jakub-onderka/php-parallel-lint": "~0.6"
+        "jakub-onderka/php-parallel-lint": "~0.8"
     },
     "suggest": {
         "ext-curl": "Allows sending data via cURL"
@@ -26,8 +26,16 @@
         "issues": "https://github.com/consumerr/php/issues"
     },
     "autoload": {
+        "psr-0": {
+            "Consumerr\\": "./src"
+        },
         "classmap": [
-            "./src"
+            "src/Consumerr/exceptions.php"
+        ]
+    },
+    "autoload-dev": {
+        "classmap": [
+            "./tests"
         ]
     },
     "extra": {
