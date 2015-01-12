@@ -2,6 +2,8 @@
 namespace Consumerr;
 
 
+use Consumerr\Sender\ISender;
+
 class Configuration
 {
 
@@ -73,6 +75,10 @@ class Configuration
 		}
 	}
 
+	/**
+	 * Get currently set Consumerr error reporting level
+	 * @return int
+	 */
 	public function getErrorReportingLevel()
 	{
 		return isset($this->config['error_reporting']) ? $this->config['error_reporting'] : $this->defaultErrorReporting;
@@ -116,6 +122,13 @@ class Configuration
 
 	}
 
+	/**
+	 * Determine sender handler from configuration
+	 *
+	 * @internal
+	 * @param array $options
+	 * @return string
+	 */
 	public function getSenderClass($options)
 	{
 		if (empty($options['sender'])) {
@@ -156,7 +169,10 @@ class Configuration
 
 	}
 
-
+	/**
+	 * @internal
+	 * @return ISender sender instance
+	 */
 	public function getSenderInstance()
 	{
 		if (empty($this->config['sender'])) {

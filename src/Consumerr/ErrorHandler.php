@@ -3,7 +3,12 @@
 
 namespace Consumerr;
 
-
+/**
+ * Class ErrorHandler
+ * @package Consumerr
+ *
+ * @internal
+ */
 class ErrorHandler
 {
 

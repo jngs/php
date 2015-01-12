@@ -57,11 +57,13 @@ class Consumerr
 	 */
 	public static function init($options = array())
 	{
+		trigger_error(__CLASS__.'::'.__METHOD__.' is deprecated. Use '.__CLASS__.'::enable instead.', E_USER_DEPRECATED);
 		self::enable($options);
 	}
 
 	/**
 	 * Enables Consumerr error handlers
+	 *
 	 * @param array|Configuration $configuration You can set your own instance of Configuration or just config options
 	 */
 	public static function enable($configuration = array())
@@ -136,12 +138,19 @@ class Consumerr
 		return TRUE;
 	}
 
+	/**
+	 * @internal
+	 */
 	public static function registerSenderShutdownHandler()
 	{
 		register_shutdown_function(array(__CLASS__, 'senderShutdownHandler'));
 		self::log("Sender shutdown handler registered");
 	}
 
+	/**
+	 * Set or unset current request as ignored.
+	 * @param bool $ignore TRUE - ignore, FALSE - don't ignore
+	 */
 	public static function ignoreAccess($ignore = TRUE)
 	{
 		self::$enabled = !$ignore;
@@ -150,6 +159,11 @@ class Consumerr
 		}
 	}
 
+	/**
+	 * Is Consumerr enabled?
+	 *
+	 * @return bool
+	 */
 	public static function isEnabled()
 	{
 		return self::$enabled;
@@ -171,6 +185,7 @@ class Consumerr
 
 
 	/**
+	 * @deprecated
 	 * @return Sender\ISender
 	 */
 	protected static function getSender()
@@ -235,6 +250,8 @@ class Consumerr
 
 
 	/**
+	 * Log exception
+	 *
 	 * @param \Exception $exception
 	 * @return \Consumerr\Entities\Error
 	 */
@@ -255,6 +272,8 @@ class Consumerr
 
 
 	/**
+	 * Adds PHP error
+	 *
 	 * @param string $message
 	 * @param int $num
 	 * @param string $file
@@ -275,6 +294,8 @@ class Consumerr
 
 
 	/**
+	 * Log event
+	 *
 	 * @param string $category
 	 * @param string $action
 	 * @param string $label
@@ -300,7 +321,7 @@ class Consumerr
 
 
 	/**
-	 *
+	 * @internal
 	 */
 	public static function senderShutdownHandler()
 	{
