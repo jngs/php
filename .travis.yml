@@ -12,9 +12,13 @@ matrix:
   allow_failures:
     - php: hhvm
 
-before_script:
+before_install:
   - composer self-update
+
+install:
   - composer install --no-interaction --prefer-source
+
+before_script:
   - ./vendor/bin/parallel-lint -e php,phpt --exclude vendor .
 
 script: ./vendor/bin/tester -p php -c ./tests/php.ini-unix ./tests/ConsumerrTest/
