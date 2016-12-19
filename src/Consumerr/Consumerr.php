@@ -106,6 +106,10 @@ class Consumerr
 		self::getTime();
 
 		if (!self::isConsole()) {
+			if (self::$configuration->isAsyncEnabled()) {
+				ob_start();
+			}
+
 			self::getAccess()->setUrl(
 				(isset($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'off') ? 'https://' : 'http://')
 				. (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : ''))
@@ -321,10 +325,27 @@ class Consumerr
 
 
 	/**
+	 *
+	 */
+	public static function closeHttpConnection() {
+		header("Connection: close");
+		header("Content-Encoding: none");
+		$size = ob_get_length();
+		header("Content-Length: $size");
+		ob_end_flush();
+		flush();
+	}
+
+
+	/**
 	 * @internal
 	 */
 	public static function senderShutdownHandler()
 	{
+		if (!self::isConsole() && self::$configuration->isAsyncEnabled()) {
+			self::closeHttpConnection(); // save request time by closing HTTP connection
+		}
+
 		if (!self::$enabled) {
 			self::log("Shutdown - consumerr is disabled, nothing will be sent.");
 
